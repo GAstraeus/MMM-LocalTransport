@@ -143,11 +143,22 @@ Module.register('MMM-LocalTransport', {
             var img = document.createElement("img");
             if(this.config.showColor){
                 img.className = "symbol";
+                img.style.backgroundColor = details.line.color;
             }else{
                 img.className = "symbol bw";
             }
             /* get symbol online*/
-            img.src = details.line.vehicle.local_icon || ("http:" + details.line.vehicle.icon);
+            if (step.travel_mode === "TRANSIT" && step.transit_details && step.transit_details.line && step.transit_details.line.vehicle.type === "SUBWAY") {
+                let lineName = step.transit_details.line.short_name;
+                img.src = `https://maps.gstatic.com/mapfiles/transit/iw2/svg/us-ny-mta/${lineName}.svg`;
+                img.className = "small";
+                img.height = 30;
+                img.width = 30;
+                img.style.backgroundColor = "#000000";
+            }
+            else {
+                img.src = details.line.vehicle.local_icon || ("http:" + details.line.vehicle.icon);
+            }
             /* can provide own symbols under /localtransport/public/*.png */
             //img.src = "/localtransport/" + details.line.vehicle.name + ".png";
             img.alt = "[" + details.line.vehicle.name +"]";
@@ -296,3 +307,4 @@ Module.register('MMM-LocalTransport', {
   }
 
 });
+
